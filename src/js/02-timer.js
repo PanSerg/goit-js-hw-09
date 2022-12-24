@@ -11,67 +11,52 @@ const minutesRef = document.querySelector('[data-minutes]');
 const secondsRef = document.querySelector('[data-seconds]');
 
 let timerId = null;
-let targetTime = `null;
+let targetTime = null;
 
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {
-    //   console.log(selectedDates[0]);
-    //   console.log(new Date());
-
-      if (selectedDates[0] < new Date()) {
-          startBtn.disabled = true;
-          window.alert('Please choose a date in the future');
-      } else {
-          startBtn.disabled = false;
-          targetTime = selectedDates[0];
-      }
+  onClose([selectedDates]) {
+    const result = new Date(selectedDates).getTime() < Date.now();
+    startBtn.disabled = result;
+    if (result) {
+      alert('Please choose a date in the future');
+    }
+    targetTime = selectedDates;
   },
 };
- startBtn.addEventListener('cick', () => {
-   changeTimerValue(targetTime);
- });
 
 flatpickr(pickrTime, options);
 
-function changeTimerValue(selectedTime) {
-  const timer = {
-    start() {
-      console.log(1, 2, 3);
-            startBtn.disabled = true;
-            pickrTime.disabled = true;
-            const startTime = selectedTime;
-            timerId = setInterval(() => {
-                const currentTime = Date.now();
+const timer = {
+  start() {
+    startBtn.disabled = true;
+    pickrTime.disabled = true;
 
-                const differenceTime = currentTime - startTime;
-                //   const realDifferenceTime = differenceTime * -1;
-                //   console.log(realDifferenceTime);
-                
-                const { days, hours, minutes, seconds } = convertMs(differenceTime);
-                console.log(`days = ${days}`);
-                daysRef.textContent = days;
-                hoursRef.textContent = hours;
-                minutesRef.textContent = minutes;
-                secondsRef.textContent = seconds;
-                //   console.log(days);
-                //   console.log(typeof days);
-                //   console.log(differenceTime);
+    const timerId = setInterval(() => {
+      const differenceTime = targetTime - Date.now();
 
-                  // if (differenceTime >= 0) {
-                  //   clearInterval(timerId);
-                  // }
-            }, 1000)
-        },
-    };
-    timer.start();
+      const date = convertMs(differenceTime);
+      updateTimer(date);
+      if (differenceTime < 1000) {
+        clearInterval(timerId);
+      }
+    }, 1000);
+  },
+};
+startBtn.addEventListener('click', timer.start);
+
+function updateTimer({ days, hours, minutes, seconds }) {
+  daysRef.textContent = days;
+  hoursRef.textContent = hours;
+  minutesRef.textContent = minutes;
+  secondsRef.textContent = seconds;
 }
 
 function pad(value) {
-    return String(value).padStart(2, '0');
+  return String(value).padStart(2, '0');
 }
 
 function convertMs(ms) {
@@ -91,7 +76,4 @@ function convertMs(ms) {
   const seconds = pad(Math.floor((((ms % day) % hour) % minute) / second));
 
   return { days, hours, minutes, seconds };
-  
 }
-
-
