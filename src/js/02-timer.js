@@ -11,7 +11,7 @@ const minutesRef = document.querySelector('[data-minutes]');
 const secondsRef = document.querySelector('[data-seconds]');
 
 let timerId = null;
-let targetTime = null;
+let targetTime = `null;
 
 const options = {
   enableTime: true,
