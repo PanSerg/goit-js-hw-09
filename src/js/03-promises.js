@@ -1,32 +1,46 @@
-const container = document.querySelector('.form');
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-const delayRef = document.querySelector('.delay');
-const stepRef = document.querySelector('.step');
-const amountRef = document.querySelector('.amount');
-const start = document.querySelector('[type="submit"]');
+Notify.init({
+  useIcon: false,
+});
 
-start.addEventListener('click', onClick);
+const form = document.querySelector('form');
 
-function onClick() {
-  for (let i = 0; i < container.children.length; i += 1) {
-     createPromise(position, delay, i * 500).then(position =>
-       console.log(position)
-     );
-   }
+form.addEventListener('submit', onFormSubmit);
+
+function onFormSubmit(event) {
+  event.preventDefault();
+
+  const { amount, delay, step } = event.target;
+
+  let firstDelay = Number(delay.value);
+  let delayStep = Number(step.value);
+  let amountValue = Number(amount.value);
+
+  for (let i = 1; i < amountValue; i++) {
+    createPromise(i, firstDelay)
+      .then(({ position, delay }) => {
+        Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      })
+      .catch(({ position, delay }) => {
+        Notify.failure(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      });
+    firstDelay += delayStep;
+  }
 }
 
 function createPromise(position, delay) {
-  const shouldResolve = Math.random() > 0.3;
+  return new Promise((resolve, reject) => {
+    const shouldResolve = Math.random() > 0.3;
+    
+    setTimeout(() => {
+      if (shouldResolve) {
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
+      }
+    }, delay);
+  });
+}
 
  
-  setTimeout(() => {
-    if (shouldResolve) {
-      position('Промис выполнен');
-    } else {
-      delay('Промис выпиолнен с ошибкой');
-    }
-  }, delay);
-  return shouldResolve;
-};
-
-  console.log(createPromise);
