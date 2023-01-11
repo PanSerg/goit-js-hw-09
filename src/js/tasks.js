@@ -61,3 +61,36 @@
 //     // return false;
 // }
 // console.log(is_weekend('Dec 24, 2022'));
+
+
+// Module 10
+    
+// const user = {
+//     name: 'Alex',
+//     email: "esco@ukr.net"
+// }
+
+// const patch = {
+//     email: 'brisk@ukr.net'
+// }
+
+// const options = {
+//     method: "POST",
+//     body: JSON.stringify({
+//         name: 'Alex',
+//         email: "esco@ukr.net"
+//     })
+  
+// }
+// fetch(`https://jsonplaceholder.typicode.com/posts`, options)
+//     .then(resp => resp.json())
+//     .then(data => console.log(data));
+
+// const options = {
+//     method: "PATCH",
+//     body: JSON.stringify({
+//         title : 'Hallo World'
+//     })
+// }
+
+// fetch(`https://jsonplaceholder.typicode.com/posts/101`, options);
